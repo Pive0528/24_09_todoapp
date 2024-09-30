@@ -6,21 +6,15 @@ import { ThemeProvider } from '@emotion/react';
 import { FaBars } from 'react-icons/fa';
 import theme from './theme';
 
-// const theme = createTheme({
-//   typography: {
-//     fontFamily: 'GmarketSansMedium',
-//   },
-// });
-
 const useTodoStatus = () => {
   const [todos, setTodos] = React.useState([]);
   const lastTodoIdRef = React.useRef(0);
 
-  const addTodo = (newTitle) => {
+  const addTodo = (newContent) => {
     const id = ++lastTodoIdRef.current;
     const newTodo = {
       id,
-      title: newTitle,
+      content: newContent,
       regDate: dateToStr(new Date()),
     };
     setTodos([...todos, newTodo]);
@@ -29,8 +23,8 @@ const useTodoStatus = () => {
     const newTodos = todos.filter((todo) => todo.id != id);
     setTodos(newTodos);
   };
-  const modifyTodo = (id, title) => {
-    const newTodos = todos.map((todo) => (todo.id != id ? todo : { ...todo, title }));
+  const modifyTodo = (id, content) => {
+    const newTodos = todos.map((todo) => (todo.id != id ? todo : { ...todo, content }));
     setTodos(newTodos);
   };
   return {
@@ -42,12 +36,12 @@ const useTodoStatus = () => {
 };
 
 const NewTodoForm = ({ todoStatus }) => {
-  const [newTodoTitle, setNewTodoTitle] = useState('');
+  const [newTodoContent, setNewTodoContent] = useState('');
   const addTodo = () => {
-    if (newTodoTitle.trim().length == 0) return;
-    const title = newTodoTitle.trim();
-    todoStatusaddTodo(title);
-    setNewTodoTitle('');
+    if (newTodoContent.trim().length == 0) return;
+    const content = newTodoContent.trim();
+    todoStatus.addTodo(content);
+    setNewTodoContent('');
   };
   return (
     <>
@@ -143,15 +137,15 @@ export default function App() {
   const onSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-    form.title.value = form.title.value.trim();
-    if (form.title.value.length == 0) {
+    form.content.value = form.content.value.trim();
+    if (form.content.value.length == 0) {
       alert('할 일 써');
-      form.title.focus();
+      form.content.focus();
       return;
     }
-    todoState.addTodo(form.title.value);
-    form.title.value = '';
-    form.title.focus();
+    todoState.addTodo(form.content.value);
+    form.content.value = '';
+    form.content.focus();
   };
 
   return (
@@ -172,13 +166,31 @@ export default function App() {
         </AppBar>
         <Toolbar />
         <form className="tw-flex tw-flex-col tw-p-4 tw-gap-2" onSubmit={onSubmit}>
-          <TextField id="outlined-basic" label="할 일 입력" variant="outlined" autoComplete="off" />
+          <TextField
+            name="content"
+            id="outlined-basic"
+            label="할 일 입력"
+            variant="outlined"
+            autoComplete="off"
+          />
           <Button className="tw-text-bold" variant="contained" type="submit">
             추가
           </Button>
         </form>
-        {todoState.todos.length}
-        {/* {todoState.todos} */}
+        <div className="tw-mb-2">할 일 갯수 : {todoState.todos.length}</div>
+        <nav>
+          <ul>
+            {todoState.todos.map((todo) => (
+              <li className="tw-mb-3" key={todo.id}>
+                <div className="tw-flex tw-flex-col tw-gap-1">
+                  <span>번호 : {todo.id}</span>
+                  <span>날짜 : {todo.regDate}</span>
+                  <span>할 일: {todo.content}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </ThemeProvider>
     </>
   );
