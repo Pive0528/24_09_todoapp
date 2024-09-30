@@ -9,6 +9,10 @@ import {
   Snackbar,
   Backdrop,
   CircularProgress,
+  Drawer,
+  List,
+  ListItemButton,
+  Link,
 } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 import { FaBars } from 'react-icons/fa';
@@ -24,7 +28,7 @@ export default function App() {
         <AppBar position="fixed">
           <Toolbar>
             <div className="tw-flex-1">
-              <FaBars />
+              <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
             </div>
             <div className="logo-box">
               <a href="/" className="tw-font-bold">
@@ -40,13 +44,18 @@ export default function App() {
       </ThemeProvider>
 
       <div>
-        <Button onClick={() => setOpen(true)}>Show backdrop</Button>
-        <Backdrop
-          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-          open={open}
-          onClick={() => setOpen(false)}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <Button onClick={() => setOpen(true)}>Open drawer</Button>
+        <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
+          <List>
+            <ListItemButton>
+              <Link underline="none" href="/write">
+                글쓰기
+              </Link>
+            </ListItemButton>
+            <ListItemButton>사과</ListItemButton>
+            <ListItemButton>바나나</ListItemButton>
+          </List>
+        </Drawer>
       </div>
     </>
   );
