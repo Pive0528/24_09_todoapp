@@ -28,7 +28,7 @@ function useTodoStatus() {
       content: newContent,
       regDate: dateToStr(new Date()),
     };
-    setTodos((todos) => [...todos, newTodo]);
+    setTodos((todos) => [newTodo, ...todos]);
   };
   const removeTodo = (id) => {
     const newTodos = todos.filter((todo) => todo.id != id);
@@ -153,7 +153,7 @@ function App() {
   React.useEffect(() => {
     todosState.addTodo('스쿼트');
     todosState.addTodo('벤치프레스');
-    todosState.addTodo('데드리프트');
+    todosState.addTodo('데드리프트\n런지');
   }, []);
 
   const onSubmit = (e) => {
