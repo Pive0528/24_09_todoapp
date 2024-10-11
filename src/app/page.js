@@ -9,6 +9,7 @@ import {
   TextField,
   createTheme,
   CssBaseline,
+  Chip,
 } from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 import { FaBars } from 'react-icons/fa';
@@ -16,6 +17,7 @@ import theme from './theme';
 import dateToStr from './dateUtil';
 
 const useTodoStatus = () => {
+  console.log('실행 1');
   const [todos, setTodos] = React.useState([]);
   const lastTodoIdRef = React.useRef(0);
 
@@ -26,7 +28,7 @@ const useTodoStatus = () => {
       content: newContent,
       regDate: dateToStr(new Date()),
     };
-    setTodos([...todos, newTodo]);
+    setTodos((todos) => [...todos, newTodo]);
   };
   const removeTodo = (id) => {
     const newTodos = todos.filter((todo) => todo.id != id);
@@ -140,8 +142,17 @@ const TodoList = ({ todoStatus }) => {
   );
 };
 
+let AppCallCount = 0;
+
 const App = () => {
-  const todoState = useTodoStatus(); // 커스텀 훅
+  AppCallCount++;
+  console.log(`AppCallCount : ${AppCallCount}`);
+
+  const todosState = useTodoStatus(); // 커스텀 훅
+
+  React.useEffect(() => {
+    todosState.addTodo('스쿼트');
+  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -152,7 +163,7 @@ const App = () => {
       form.content.focus();
       return;
     }
-    todoState.addTodo(form.content.value);
+    todosState.addTodo(form.content.value);
     form.content.value = '';
     form.content.focus();
   };
@@ -185,15 +196,15 @@ const App = () => {
           추가
         </Button>
       </form>
-      <div className="tw-mb-2">할 일 갯수 : {todoState.todos.length}</div>
+      <div className="tw-mb-2">할 일 갯수 : {todosState.todos.length}</div>
       <nav>
         <ul>
-          {todoState.todos.map((todo) => (
+          {todosState.todos.map((todo) => (
             <li className="tw-mb-3" key={todo.id}>
-              <div className="tw-flex tw-flex-col tw-gap-1">
-                <span>번호 : {todo.id}</span>
-                <span>날짜 : {todo.regDate}</span>
-                <span>할 일: {todo.content}</span>
+              <div className="tw-flex tw-flex-col tw-gap-1 tw-mb-[30px]">
+                <Chip label={`번호 : ${todo.id}`} variant="outlined"></Chip>
+                <Chip label={`날짜 : ${todo.regDate}`} variant="outlined"></Chip>
+                <Chip label={`할 일 : ${todo.content}`} variant="outlined"></Chip>
               </div>
             </li>
           ))}
@@ -204,6 +215,8 @@ const App = () => {
 };
 
 export default function themeApp() {
+  console.log('실행 2');
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
