@@ -1,10 +1,19 @@
 'use client';
 
 import * as React from 'react';
-import { AppBar, Toolbar, Button, Alert as MuiAlert, TextField, createTheme } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Alert as MuiAlert,
+  TextField,
+  createTheme,
+  CssBaseline,
+} from '@mui/material';
 import { ThemeProvider } from '@emotion/react';
 import { FaBars } from 'react-icons/fa';
 import theme from './theme';
+import dateToStr from './dateUtil';
 
 const useTodoStatus = () => {
   const [todos, setTodos] = React.useState([]);
@@ -131,7 +140,7 @@ const TodoList = ({ todoStatus }) => {
   );
 };
 
-export default function App() {
+const App = () => {
   const todoState = useTodoStatus(); // 커스텀 훅
 
   const onSubmit = (e) => {
@@ -150,69 +159,61 @@ export default function App() {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <AppBar position="fixed">
-          <Toolbar>
-            <div className="tw-flex-1">
-              <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
-            </div>
-            <div className="logo-box">
-              <a href="/" className="tw-font-bold">
-                로고
-              </a>
-            </div>
-            <div className="tw-flex-1 tw-flex tw-justify-end">글쓰기</div>
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-        <form className="tw-flex tw-flex-col tw-p-4 tw-gap-2" onSubmit={onSubmit}>
-          <TextField
-            name="content"
-            id="outlined-basic"
-            label="할 일 입력"
-            variant="outlined"
-            autoComplete="off"
-          />
-          <Button className="tw-text-bold" variant="contained" type="submit">
-            추가
-          </Button>
-        </form>
-        <div className="tw-mb-2">할 일 갯수 : {todoState.todos.length}</div>
-        <nav>
-          <ul>
-            {todoState.todos.map((todo) => (
-              <li className="tw-mb-3" key={todo.id}>
-                <div className="tw-flex tw-flex-col tw-gap-1">
-                  <span>번호 : {todo.id}</span>
-                  <span>날짜 : {todo.regDate}</span>
-                  <span>할 일: {todo.content}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </ThemeProvider>
+      <AppBar position="fixed">
+        <Toolbar>
+          <div className="tw-flex-1">
+            <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
+          </div>
+          <div className="logo-box">
+            <a href="/" className="tw-font-bold">
+              로고
+            </a>
+          </div>
+          <div className="tw-flex-1 tw-flex tw-justify-end">글쓰기</div>
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+      <form className="tw-flex tw-flex-col tw-p-4 tw-gap-2" onSubmit={onSubmit}>
+        <TextField
+          name="content"
+          id="outlined-basic"
+          label="할 일 입력"
+          variant="outlined"
+          autoComplete="off"
+        />
+        <Button className="tw-text-bold" variant="contained" type="submit">
+          추가
+        </Button>
+      </form>
+      <div className="tw-mb-2">할 일 갯수 : {todoState.todos.length}</div>
+      <nav>
+        <ul>
+          {todoState.todos.map((todo) => (
+            <li className="tw-mb-3" key={todo.id}>
+              <div className="tw-flex tw-flex-col tw-gap-1">
+                <span>번호 : {todo.id}</span>
+                <span>날짜 : {todo.regDate}</span>
+                <span>할 일: {todo.content}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </>
+  );
+};
+
+export default function themeApp() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
   );
 }
 
-// Util
-// 날짜 객체를 인자로 받아서 문장으로 반환해주는 함수 (yyyy-MM-dd hh:mm:ss)
-function dateToStr(d) {
-  const pad = (n) => {
-    return n < 10 ? '0' + n : n;
-  };
-  return (
-    d.getFullYear() +
-    '-' +
-    pad(d.getMonth() + 1) +
-    '-' +
-    pad(d.getDate()) +
-    ' ' +
-    pad(d.getHours()) +
-    ':' +
-    pad(d.getMinutes()) +
-    ':' +
-    pad(d.getSeconds())
-  );
-}
+// export default function normalApp() {
+//   return (
+//       <App />
+//   );
+// }
